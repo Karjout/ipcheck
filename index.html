@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Domain and IPs</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f2f2f2;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+      }
+
+      textarea {
+        width: 100%;
+        height: 200px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:nth-child(1) {
+        background-color: #4caf50;
+        color: #fff;
+      }
+
+      button:nth-child(2) {
+        background-color: #7204f7;
+        color: #fff;
+      }
+
+      button:nth-child(3) {
+        background-color: red;
+        color: #fff;
+      }
+
+      #resultContainer {
+        margin-top: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        white-space: pre-wrap;
+      }
+
+      #resultContainer pre {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Extract Domains and IPs</h1>
+
+      <textarea
+        id="textInput"
+        placeholder="Enter text containing domains and IPs..."
+        rows="5"
+        cols="30"
+      ></textarea>
+      <div class="button-container">
+        <button onclick="extractDomains()">Extract Domains</button>
+        <button id="copyButton" onclick="copyContent()">Copy</button>
+        <button id="clearButton" onclick="clearContent()">Reset</button>
+      </div>
+
+      <textarea
+        id="output"
+        placeholder="Extracted domains with their associated IPs will appear here..."
+        rows="5"
+        cols="30"
+      ></textarea>
+      <pre id="resultContainer"></pre>
+    </div>
+
+    <script>
+      function extractDomains() {
+        var textarea = document.getElementById("textInput");
+        var text = textarea.value;
+
+        const ips = text.match(/\d+\.\d+\.\d+\.\d+/g);
+        const domains = text.match(/[a-zA-Z0-9.-]+\.[a-z]+/g);
+
+        const domainToIps = {};
+        if (ips && domains) {
+          ips.forEach((ip, index) => {
+            const domain = domains[index];
+            if (!domainToIps[domain]) {
+              domainToIps[domain] = [];
+            }
+            domainToIps[domain].push(ip);
+          });
+        }
+
+        var output = document.getElementById("output");
+        output.value = JSON.stringify(domainToIps, null, 2);
+      }
+
+      function copyContent() {
+        var output = document.getElementById("output");
+        output.select();
+        document.execCommand("copy");
+        alert("Content has been copied to the clipboard");
+      }
+
+      function clearContent() {
+        document.getElementById("textInput").value = "";
+        document.getElementById("output").value = "";
+      }
+    </script>
+  </body>
+</html>
